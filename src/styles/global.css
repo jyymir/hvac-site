@@ -1,0 +1,81 @@
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+  }
+
+  /* Respect users who've asked for reduced motion (vestibular disorders,
+     motion sensitivity). Smooth scrolling, hover animations, and pulse
+     effects are disabled/shortened rather than removing functionality. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Consistent, visible focus ring for keyboard users across every
+     interactive element. Mouse users don't see it (`:focus-visible`). */
+  :focus-visible {
+    outline: 3px solid var(--color-accent-strong);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  /* Visually hides content while keeping it available to screen readers. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .sr-only-focusable:focus {
+    position: fixed;
+    z-index: 100;
+    top: 1rem;
+    left: 1rem;
+    width: auto;
+    height: auto;
+    padding: 0.75rem 1.25rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    background: var(--color-primary-dark);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 600;
+  }
+}

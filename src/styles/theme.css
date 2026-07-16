@@ -1,0 +1,36 @@
+/**
+ * Design tokens for Comfort Zone HVAC.
+ *
+ * These are exposed to Tailwind via @theme, so they're usable as utilities
+ * (e.g. `bg-primary`, `text-accent-strong`, `font-display`).
+ *
+ * Accessibility note: the brand orange (--color-accent, #F58220) is
+ * decorative-only — icons, dots, borders, large glyphs. Its contrast
+ * against white (~2.7:1) fails WCAG AA for text. Anywhere orange is used
+ * as *text* or behind *white text* (buttons, labels, links), we use
+ * --color-accent-strong (#C2540A) instead, which passes AA (~4.6:1) at
+ * normal text sizes while staying visually on-brand.
+ */
+@theme {
+  --color-primary: #1e73be;
+  --color-primary-dark: #0d3d6b;
+  --color-primary-light: #e8f1fa;
+
+  --color-accent: #f58220;
+  --color-accent-strong: #c2540a;
+  --color-accent-dark: #9c4308;
+
+  --color-ink: #1a2332;
+  --color-muted: #62707e;
+  --color-surface: #f7f8fa;
+  --color-surface-alt: #d4e6f5;
+  --color-border: rgba(30, 115, 190, 0.16);
+
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-heading: "Barlow", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
