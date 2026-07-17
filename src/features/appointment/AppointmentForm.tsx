@@ -22,6 +22,37 @@ export function AppointmentForm() {
   const [justPrefilled, setJustPrefilled] = useState(false);
   const prefillTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // The native datetime-local widget renders noticeably wider than every
+  // other field on mobile browsers (a fixed internal layout, not something
+  // Tailwind can resize). We split it into a compact Date field + Time
+  // field instead — same visual footprint as the Name/Phone row — and
+  // combine them back into the single "YYYY-MM-DDTHH:mm" string the rest
+  // of the form (validation, submission) already expects.
+  const [dateDraft, setDateDraft] = useState("");
+  const [timeDraft, setTimeDraft] = useState("");
+
+  // Keep the local date/time drafts in sync when the form is reset
+  // elsewhere (e.g. cleared after a successful submit).
+  useEffect(() => {
+    if (formData.preferredDateTime === "" && (dateDraft !== "" || timeDraft !== "")) {
+      setDateDraft("");
+      setTimeDraft("");
+    }
+    // Only react to external resets — dateDraft/timeDraft changes are
+    // already the source of truth going the other direction.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.preferredDateTime]);
+
+  const handleDateDraftChange = (nextDate: string) => {
+    setDateDraft(nextDate);
+    updateField("preferredDateTime", nextDate && timeDraft ? `${nextDate}T${timeDraft}` : "");
+  };
+
+  const handleTimeDraftChange = (nextTime: string) => {
+    setTimeDraft(nextTime);
+    updateField("preferredDateTime", dateDraft && nextTime ? `${dateDraft}T${nextTime}` : "");
+  };
+
   // Listen for "Book Service" clicks fired from the Services section
   // (see src/lib/serviceSelection.ts) and pre-fill + focus the dropdown.
   useEffect(() => {
@@ -61,7 +92,7 @@ export function AppointmentForm() {
         />
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-5">
+      <div className="grid sm:grid-cols-2 gap-5 min-w-0">
         <FormField id="name" label="Full Name" required error={fieldError("name")}>
           <input
             id="name"
@@ -138,24 +169,61 @@ export function AppointmentForm() {
         </select>
       </FormField>
 
-      <FormField
-        id="preferredDateTime"
-        label="Requested Date & Time"
-        required
-        error={fieldError("preferredDateTime")}
-      >
-        <input
-          id="preferredDateTime"
-          name="preferredDateTime"
-          type="datetime-local"
-          value={formData.preferredDateTime}
-          onChange={(e) => updateField("preferredDateTime", e.target.value)}
-          onBlur={() => markTouched("preferredDateTime")}
-          aria-invalid={Boolean(fieldError("preferredDateTime"))}
-          aria-describedby={fieldError("preferredDateTime") ? "preferredDateTime-error" : undefined}
-          className={inputClassName}
-        />
-      </FormField>
+      <div className="min-w-0">
+        <span id="preferredDateTime-label" className="block text-sm font-semibold text-ink mb-1.5">
+          Requested Date &amp; Time
+          <span aria-hidden="true" className="text-accent-strong">
+            {" "}
+            *
+          </span>
+          <span className="sr-only"> (required)</span>
+        </span>
+
+        <div
+          role="group"
+          aria-labelledby="preferredDateTime-label"
+          className="grid grid-cols-2 gap-3 min-w-0"
+        >
+          <div className="min-w-0">
+            <label htmlFor="preferredDate" className="sr-only">
+              Preferred date
+            </label>
+            <input
+              id="preferredDate"
+              name="preferredDate"
+              type="date"
+              value={dateDraft}
+              onChange={(e) => handleDateDraftChange(e.target.value)}
+              onBlur={() => markTouched("preferredDateTime")}
+              aria-invalid={Boolean(fieldError("preferredDateTime"))}
+              aria-describedby={fieldError("preferredDateTime") ? "preferredDateTime-error" : undefined}
+              className={inputClassName}
+            />
+          </div>
+          <div className="min-w-0">
+            <label htmlFor="preferredTime" className="sr-only">
+              Preferred time
+            </label>
+            <input
+              id="preferredTime"
+              name="preferredTime"
+              type="time"
+              value={timeDraft}
+              onChange={(e) => handleTimeDraftChange(e.target.value)}
+              onBlur={() => markTouched("preferredDateTime")}
+              aria-invalid={Boolean(fieldError("preferredDateTime"))}
+              aria-describedby={fieldError("preferredDateTime") ? "preferredDateTime-error" : undefined}
+              className={inputClassName}
+            />
+          </div>
+        </div>
+
+        {fieldError("preferredDateTime") && (
+          <p id="preferredDateTime-error" role="alert" className="mt-1.5 text-sm text-red-700">
+            {fieldError("preferredDateTime")}
+          </p>
+        )}
+      </div>
 
       <FormField id="notes" label="Notes" error={fieldError("notes")}>
         <textarea

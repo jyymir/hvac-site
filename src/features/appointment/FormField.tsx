@@ -19,7 +19,7 @@ export function FormField({ id, label, error, required, children, className }: F
   const errorId = `${id}-error`;
 
   return (
-    <div className={className}>
+    <div className={cn("min-w-0", className)}>
       <label htmlFor={id} className="block text-sm font-semibold text-ink mb-1.5">
         {label}
         {required && (
@@ -43,4 +43,4 @@ export function FormField({ id, label, error, required, children, className }: F
 }
 
 export const inputClassName =
-  "w-full px-4 py-3 rounded-xl border border-border bg-[#f0f4f9] text-ink placeholder-muted text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all aria-[invalid=true]:border-red-500 aria-[invalid=true]:ring-red-200";
+  "w-full min-w-0 max-w-full box-border px-4 py-3 rounded-xl border border-border bg-[#f0f4f9] text-ink placeholder-muted text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all aria-[invalid=true]:border-red-500 aria-[invalid=true]:ring-red-200";

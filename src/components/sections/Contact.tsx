@@ -53,7 +53,7 @@ export function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionHeading eyebrow="Get In Touch" title="CONTACT US" />
 
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
           {CONTACT_CARDS.map(({ icon: Icon, label, value, sub, href, tone }) => (
             <li
               key={label}
